@@ -68,7 +68,7 @@ namespace Microsoft.Xna.Framework.Graphics
 		
 		// my change
 		// --------
-		internal uint ID
+		public uint ID
 		{
 			get
 			{ 
