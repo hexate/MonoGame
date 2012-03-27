@@ -69,6 +69,7 @@ non-infringement.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 
 using MonoTouch.Foundation;
 using MonoTouch.OpenGLES;
@@ -89,6 +90,7 @@ namespace Microsoft.Xna.Framework
 		private OpenALSoundController soundControllerInstance = null;
         private NSTimer _runTimer;
         private bool _isExitPending;
+		private bool _isPaused;
 
         public iOSGamePlatform(Game game) :
             base(game)
@@ -194,7 +196,7 @@ namespace Microsoft.Xna.Framework
             try {
                 if (PerformPendingExit())
                     return;
-                if (IsPlayingVideo)
+                if (IsPlayingVideo || _isPaused)
                     return;
 
                 // FIXME: Remove this call, and the whole Tick method, once
@@ -205,7 +207,7 @@ namespace Microsoft.Xna.Framework
                 _viewController.View.MakeCurrent();
                 Game.Tick ();
 
-                if (!IsPlayingVideo)
+                if (!IsPlayingVideo && !_isPaused)
                     _viewController.View.Present ();
 
                 PerformPendingExit();
@@ -240,15 +242,16 @@ namespace Microsoft.Xna.Framework
         {
 		// Update our OpenAL sound buffer pools
 		soundControllerInstance.Update();
-            if (IsPlayingVideo)
+            if (IsPlayingVideo || _isPaused)
                 return false;
             return true;
         }
 
         public override bool BeforeUpdate(GameTime gameTime)
         {
-            if (IsPlayingVideo)
+            if (IsPlayingVideo || _isPaused)
                 return false;
+
             return true;
         }
 
@@ -305,12 +308,15 @@ namespace Microsoft.Xna.Framework
 
         private void Application_WillEnterForeground(NSNotification notification)
         {
-			// Already handled in Application_DidBecomeActive. See below for IsActive state change.	
+			// pauses the game's update and draw cycles so GL calls are not made 
+			// when the application is in the background.
+			_isPaused = false;
         }
 
         private void Application_DidEnterBackground(NSNotification notification)
         {
-			// Already handled in Application_WillResignActive. See below for IsActive state change.
+			// start allowing the update and draw cycles again when the app continues running.
+			_isPaused = true;
         }
 
         private void Application_DidBecomeActive(NSNotification notification)
