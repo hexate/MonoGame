@@ -42,6 +42,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
@@ -262,7 +263,18 @@ namespace Microsoft.Xna.Framework.Graphics
 			if (filename.Contains(".pdf"))
 			{
 				image = Extender.FromPdf(filename,width,height);
-			} 
+			}
+			else if (filename.Contains(".pvr"))
+			{
+				using (NSData ns = NSData.FromFile (filename))
+				{
+					Debug.WriteLine ("read in pvr: " + ns.Length);
+					//GL.CompressedTexImage2D (All.Texture2D, 0, All.CompressedRgbPvrtc4Bppv1Img, 256, 256, 0, (int)ns.Length, ns.Bytes);
+					//glCompressedTexImage2D(GL_TEXTURE_2D, i, _internalFormat, width, height, 0, [data length], [data bytes]);
+					//GL.CompressedTexImage2D(All.Texture2D, 0, (int)All.Rgba, _width, _height, 0, All.Rgba, All.UnsignedByte, textureData);
+				}
+				image = null;
+			}
 			else
 			{
 				// If we are loading graphics from the Content folder then we can take advantage of the FromBundle methods ability

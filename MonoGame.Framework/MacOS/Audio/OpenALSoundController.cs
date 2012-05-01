@@ -58,7 +58,7 @@ namespace Microsoft.Xna.Framework.Audio
 			for (int x=0; x < MAX_NUMBER_OF_SOURCES; x++) {
 				availableSourcesCollection.Add (allSourcesArray [x]);
 			}
-#if IPHONE			
+#if IPHONEBROKE			
 			AudioSession.Initialize();
 			AudioSession.Category = AudioSessionCategory.SoloAmbientSound;
 			

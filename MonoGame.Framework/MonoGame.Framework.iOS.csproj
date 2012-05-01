@@ -12,7 +12,6 @@
     <RootNamespace>Microsoft.Xna.Framework</RootNamespace>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <ReleaseVersion>2.5.0.0</ReleaseVersion>
-    <MtouchSdkVersion>3.0</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,11 +26,12 @@
         <Command type="Custom" />
       </CustomCommands>
     </CustomCommands>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <AssemblyName>MonoGame.Framework.iOS</AssemblyName>
     <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchSdkVersion>3.0</MtouchSdkVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -39,10 +39,11 @@
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>IPHONE;GLES</DefineConstants>
     <AssemblyName>MonoGame.Framework.iOS</AssemblyName>
     <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchSdkVersion>3.0</MtouchSdkVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,10 +54,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <MtouchDebug>true</MtouchDebug>
     <AssemblyName>MonoGame.Framework</AssemblyName>
     <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchSdkVersion>3.0</MtouchSdkVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -64,10 +66,21 @@
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>IPHONE;GLES</DefineConstants>
     <AssemblyName>MonoGame.Framework</AssemblyName>
     <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchSdkVersion>3.0</MtouchSdkVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\AppStore</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>MonoGameFrameworkiOS</AssemblyName>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <DefineConstants>IPHONE;GLES</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

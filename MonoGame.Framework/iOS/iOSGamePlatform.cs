@@ -370,6 +370,22 @@ namespace Microsoft.Xna.Framework
 
 		public override void EndScreenDeviceChange (string screenDeviceName, int clientWidth,int clientHeight)
 		{
+			// copied from ViewController_InterfaceOrientationChanged
+			var orientation = OrientationConverter.ToDisplayOrientation (
+				_viewController.InterfaceOrientation);
+
+			// FIXME: The presentation parameters for the GraphicsDevice should
+			//        be managed by the GraphicsDevice itself.  Not by
+			//        iOSGamePlatform.
+			var gdm = (GraphicsDeviceManager) Game.Services.GetService (typeof (IGraphicsDeviceManager));
+
+			if (gdm != null) {
+				var presentParams = gdm.GraphicsDevice.PresentationParameters;
+				presentParams.BackBufferWidth = gdm.PreferredBackBufferWidth;
+				presentParams.BackBufferHeight = gdm.PreferredBackBufferHeight;
+				presentParams.DisplayOrientation = orientation;
+			}
+			TouchPanel.DisplayOrientation = orientation;
 		}
 	}
 }
