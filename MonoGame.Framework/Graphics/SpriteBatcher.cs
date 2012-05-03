@@ -169,7 +169,7 @@ namespace Microsoft.Xna.Framework.Graphics
 					lastTint = item.Tint;
 					GL20.ActiveTexture(ALL20.Texture0);
 					GL20.BindTexture ( ALL20.Texture2D, texID );
-					GL20.Uniform1(texID, 0);
+					//GL20.Uniform1(texID, 0);
 					GL20.VertexAttrib4(attributeTint,vtint.X, vtint.Y, vtint.Z, vtint.W);
 
 					samplerState.Activate();
