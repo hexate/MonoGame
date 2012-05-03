@@ -42,7 +42,6 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.IO;
-using System.Diagnostics;
 
 using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
@@ -182,28 +181,6 @@ namespace Microsoft.Xna.Framework.Graphics
 				data = tempData;			
 			}
 			*/
-			
-//			if(pixelFormat == SurfaceFormat.Color) {
-//                tempData = Marshal.AllocHGlobal(height * width * 2);
-//               
-//                int d32;
-//                short d16;
-//                int inPixel32Count=0,outPixel16Count=0;
-//                for(i = 0; i < width * height; ++i, inPixel32Count+=sizeof(int))
-//                {
-//                    d32 = Marshal.ReadInt32(data,inPixel32Count);
-//                    short R = (short)((((d32 >> 0) & 0xFF) >> 4) << 12);
-//                    short G = (short)((((d32 >> 8) & 0xFF) >> 4) << 8);
-//                    short B = (short)((((d32 >> 16) & 0xFF) >> 4) << 4);
-//                    short A = (short)((((d32 >> 24) & 0xFF)) >> 4);
-//                    d16 = (short)  (R | G  | B | A);
-//                    Marshal.WriteInt16(tempData,outPixel16Count,d16);
-//                    outPixel16Count += sizeof(short);
-//                }
-//                Marshal.FreeHGlobal(data);
-//                data = tempData;           
-//                pixelFormat = SurfaceFormat.Bgra4444;
-//            };
 			
 			InitWithData(data,pixelFormat,width,height,imageSize, filter);
 	

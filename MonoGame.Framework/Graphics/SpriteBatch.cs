@@ -344,6 +344,8 @@ namespace Microsoft.Xna.Framework.Graphics
             {
                 GL20.Disable(ALL20.ScissorTest);
             }
+
+            GL20.Disable(ALL20.Texture2D);
 		}
 		
 		public void EndGL11()

@@ -73,10 +73,6 @@ namespace Microsoft.Xna.Framework.Content
 				return FileName+".gif";
 			if (File.Exists(FileName+".pict"))
 				return FileName+".pict";
-			if (File.Exists(FileName+".pvr"))
-				return FileName+".pvr";
-			//if (File.Exists(FileName+".pvr.gz"))
-			//	return FileName+".pvr.gz";
 			
 			return null;
 		}
