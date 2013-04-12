@@ -47,7 +47,7 @@ using Microsoft.Xna;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
-#if IPHONE
+#if IOS
 using MonoTouch.AudioToolbox;
 using MonoTouch.AudioUnit;
 
@@ -59,6 +59,8 @@ using MonoMac.AudioUnit;
 using MonoMac.OpenAL;
 #endif
 
+using System.Diagnostics;
+
 namespace Microsoft.Xna.Framework.Audio
 {
 	public sealed partial class SoundEffect : IDisposable
@@ -66,9 +68,9 @@ namespace Microsoft.Xna.Framework.Audio
 		private string _name = "";
 		private string _filename = "";
 		internal byte[] _data;
-		List<SoundEffectInstance> playing = null;
-		List<SoundEffectInstance> available = null;
-		List<SoundEffectInstance> toBeRecycled = null;
+		private List<SoundEffectInstance> playing = null;
+        private List<SoundEffectInstance> available = null;
+        private List<SoundEffectInstance> toBeRecycled = null;
 
 		internal float Rate { get; set; }
 
@@ -89,8 +91,13 @@ namespace Microsoft.Xna.Framework.Audio
 			double rate;
 			double duration;
 
+            try {
 			_data = OpenALSupport.LoadFromFile (_filename,
 			                                    out size, out format, out rate, out duration);
+            }
+            catch(Exception ex) {
+                throw new Content.ContentLoadException("Could not load audio data", ex);
+            }
 
 			_name = Path.GetFileNameWithoutExtension (fileName);
 
@@ -110,6 +117,18 @@ namespace Microsoft.Xna.Framework.Audio
 			LoadAudioStream (_data);
 
 		}
+
+        internal SoundEffect(Stream s)
+        {
+            var data = new byte[s.Length];
+            if(s.Length == 0) {
+                throw new Content.ContentLoadException("SoundEffect content stream does not contain any content.");
+            }
+            s.Read(data, 0, (int)s.Length);
+
+            _data = data;
+            LoadAudioStream(_data);
+        }
 
 		public SoundEffect (byte[] buffer, int sampleRate, AudioChannels channels)
 		{
@@ -145,16 +164,23 @@ namespace Microsoft.Xna.Framework.Audio
 
 			LoadAudioStream (_data);
 
-		}
+		}        
+        /// <summary>
+        /// Loads the audio stream from the given byte array. If the AudioFileStream does not return an Ok status
+        /// then a ContentLoadException is thrown.
+        /// </summary>
+        /// <param name="audiodata">The full byte array of the audio stream.</param>
 
 		void LoadAudioStream (byte[] audiodata)
 		{
 			AudioFileStream afs = new AudioFileStream (AudioFileType.WAVE);
 			//long pac = afs.DataPacketCount;
 			afs.PacketDecoded += HandlePacketDecoded;
-
-			afs.ParseBytes (audiodata, false);
+			AudioFileStreamStatus status = afs.ParseBytes (audiodata, false);
 			afs.Close ();
+            if(status != AudioFileStreamStatus.Ok) {
+                throw new Content.ContentLoadException("Could not load audio data. The status code was " + status);
+            }
 		}
 
 		void HandlePacketDecoded (object sender, PacketReceivedEventArgs e)
@@ -171,7 +197,18 @@ namespace Microsoft.Xna.Framework.Audio
 			if (asbd.ChannelsPerFrame == 1) {
 				if (asbd.BitsPerChannel == 8) {
 					Format = ALFormat.Mono8;
-				} else {
+				}
+				else if (asbd.BitsPerChannel == 0) // This shouldn't happen. hackking around bad data for now.
+				{
+				//TODO: Remove this when sound's been fixed on iOS and other devices.
+					Format = ALFormat.Mono16;
+					Debug.WriteLine("Warning, bad decoded audio packet in SoundEffect.HandlePacketDecoded. Squelching sound.");
+					_duration = TimeSpan.Zero;
+					_data = audioData;
+					return;
+				}
+				else 
+				{
 					Format = ALFormat.Mono16;
 				}
 			} else {
@@ -182,6 +219,7 @@ namespace Microsoft.Xna.Framework.Audio
 				}
 			}
 			_data = audioData;
+
 
 			var _dblDuration = (e.Bytes / ((asbd.BitsPerChannel / 8) * asbd.ChannelsPerFrame)) / asbd.SampleRate;
 			_duration = TimeSpan.FromSeconds (_dblDuration);
@@ -198,7 +236,7 @@ namespace Microsoft.Xna.Framework.Audio
 
 		public bool Play ()
 		{
-			return Play (MasterVolume, 1.0f, 0.0f);
+			return Play (MasterVolume, 0.0f, 0.0f);
 		}
 
 		public bool Play (float volume, float pitch, float pan)
@@ -331,7 +369,12 @@ namespace Microsoft.Xna.Framework.Audio
 			set {
 				speedOfSound = value;
 			}
-		}		
+		}
+
+        public static SoundEffect FromStream(Stream stream)
+        {
+            return new SoundEffect(stream);
+        }
 	}
 }
 

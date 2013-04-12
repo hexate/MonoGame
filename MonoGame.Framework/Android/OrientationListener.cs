@@ -30,6 +30,10 @@ namespace Microsoft.Xna.Framework
 
         public override void OnOrientationChanged(int orientation)
         {
+            // Avoid changing orientation whilst the screen is locked
+            if (ScreenReceiver.ScreenLocked)
+                return;
+
             if (!inprogress)
             {
                 inprogress = true;
@@ -45,13 +49,13 @@ namespace Microsoft.Xna.Framework
                 var disporientation = DisplayOrientation.Unknown;
                 switch (ort)
                 {
-                    case 90: disporientation = DisplayOrientation.LandscapeRight;
+                    case 90: disporientation = AndroidCompatibility.FlipLandscape ? DisplayOrientation.LandscapeLeft : DisplayOrientation.LandscapeRight;
                         break;
-                    case 270: disporientation = DisplayOrientation.LandscapeLeft;
+					case 270: disporientation = AndroidCompatibility.FlipLandscape ? DisplayOrientation.LandscapeRight : DisplayOrientation.LandscapeLeft;
                         break;
                     case 0: disporientation = DisplayOrientation.Portrait;
                         break;
-                    case 180: disporientation = DisplayOrientation.PortraitUpsideDown;
+                    case 180: disporientation = DisplayOrientation.PortraitDown;
                         break;
                     default:
                         disporientation = DisplayOrientation.LandscapeLeft;
@@ -62,7 +66,7 @@ namespace Microsoft.Xna.Framework
                 if ((AndroidGameActivity.Game.Window.GetEffectiveSupportedOrientations() & disporientation) != 0 &&
                      disporientation != AndroidGameActivity.Game.Window.CurrentOrientation)
                 {
-                    AndroidGameActivity.Game.Window.SetOrientation(disporientation);
+                    AndroidGameActivity.Game.Window.SetOrientation(disporientation, true);
                 }
                 inprogress = false;
             }
